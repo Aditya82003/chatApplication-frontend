@@ -7,6 +7,8 @@ import { TbPassword } from 'react-icons/tb';
 import { FaRegEye } from 'react-icons/fa6';
 import { FaRegEyeSlash } from 'react-icons/fa6';
 import { Link } from "react-router";
+import AuthPattern from "../components/AuthPattern";
+import toast from "react-hot-toast";
 const SignUp: FC = () => {
 
   const [showPassword, setShowPassword] = useState<showPasswordState>(false)
@@ -24,13 +26,40 @@ const SignUp: FC = () => {
     }))
   }
 
+  const formValidation = (): boolean => {
+    if (!formData.fullName.trim()) {
+       toast.error("Full name is required")
+       return false
+    }
+    if (!formData.email.trim()) {
+       toast.error("Email is required")
+      return false
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)){
+      toast.error("Invalid email")
+      return false
+    } 
+    if (!formData.password){
+      toast.error("Password is required")
+      return false
+    } 
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&^_-])[A-Za-z\d@$!%*?#&^_-]{8,}$/.test(formData.password)){
+      toast.error("Password must be at least 8 characters and include uppercase, lowercase, number, and special character")
+      return false
+    } 
+    return true
+
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(formData)
+    const success = formValidation()
+    if (success) 
+      console.log(formData)
 
   }
   return (
-    <div className="container mx-auto grid max-h-screen lg:grid-cols-2 p-6 ">
+    <div className="container mx-auto min-h-[calc(100vh-4rem)] grid  lg:grid-cols-2  ">
       {/* left side*/}
       <div className=" flex flex-col justify-center items-center p-6 sm:p-12">
         {/*left top */}
@@ -113,7 +142,10 @@ const SignUp: FC = () => {
           </p>
         </div>
       </div>
-      <div className="max-h-screen w-full">   </div>
+      <AuthPattern
+        title="Join our community"
+        subtitle="Connect with friend,share moments,and stay in touch with your loved ones."
+      />
     </div>
   )
 }

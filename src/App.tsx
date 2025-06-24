@@ -10,13 +10,11 @@ import { useEffect } from "react"
 import { checkAuth } from "./store/features/auth/authSlice"
 import { useSelector } from "react-redux"
 import Login from "./pages/LogIn"
+import { Toaster } from "react-hot-toast"
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { user, isCheckAuth, error } = useSelector((state: RootState) => state.auth)
-  console.log(user)
-  console.log(isCheckAuth)
-  console.log(error)
+  const { user } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
     dispatch(checkAuth())
@@ -33,6 +31,16 @@ function App() {
           <Route path="/profile" element={user ? <Profile /> : <Navigate to='/login' />} />
         </Routes>
       </main>
+       <Toaster
+        position="bottom-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+        }}
+      />
     </>
   )
 }
