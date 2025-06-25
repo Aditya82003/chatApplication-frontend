@@ -19,7 +19,6 @@ const SignUp: FC = () => {
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value
@@ -66,7 +65,7 @@ const SignUp: FC = () => {
         <div className="w-full max-w-md mb-18">
           <div className="flex flex-col items-center gap-2 group">
 
-            <div className=" size-12 p-2 rounded-xl bg-primary/10 flex justify-center items-center hover:bg-primary/20 transition-colors">
+            <div className=" size-12  rounded-xl bg-primary/10 flex justify-center items-center hover:bg-primary/20 transition-colors">
               <FiMessageSquare className="size-6 text-primary" />
             </div>
             <h1 className="text-2xl font-bold mt-2">Create Account</h1>

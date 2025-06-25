@@ -6,3 +6,8 @@ export type formDataState = {
     password:string
 }
 
+export type SignInState={
+    email:string
+    password:string
+}
+
