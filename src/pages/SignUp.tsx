@@ -1,5 +1,5 @@
 import { useState, type FC } from "react"
-import type { formDataState, showPasswordState } from "../types/types"
+import type { showPasswordState, signUpState } from "../types/types"
 import { FiMessageSquare } from 'react-icons/fi';
 import { FaUser } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
@@ -9,10 +9,16 @@ import { FaRegEyeSlash } from 'react-icons/fa6';
 import { Link } from "react-router";
 import AuthPattern from "../components/AuthPattern";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import { useSelector } from "react-redux";
+import { signUpThunk } from "../store/features/auth/authSlice";
+import { TbLoaderQuarter } from 'react-icons/tb';
 const SignUp: FC = () => {
-
+  const dispatch = useDispatch<AppDispatch>()
+  const {  isSigningUP } = useSelector((state: RootState) => state.auth)
   const [showPassword, setShowPassword] = useState<showPasswordState>(false)
-  const [formData, setFormData] = useState<formDataState>({
+  const [formData, setFormData] = useState<signUpState>({
     fullName: "",
     email: "",
     password: ""
@@ -27,35 +33,41 @@ const SignUp: FC = () => {
 
   const formValidation = (): boolean => {
     if (!formData.fullName.trim()) {
-       toast.error("Full name is required")
-       return false
+      toast.error("Full name is required")
+      return false
     }
     if (!formData.email.trim()) {
-       toast.error("Email is required")
+      toast.error("Email is required")
       return false
     }
-    if (!/\S+@\S+\.\S+/.test(formData.email)){
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
       toast.error("Invalid email")
       return false
-    } 
-    if (!formData.password){
+    }
+    if (!formData.password) {
       toast.error("Password is required")
       return false
-    } 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&^_-])[A-Za-z\d@$!%*?#&^_-]{8,}$/.test(formData.password)){
+    }
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&^_-])[A-Za-z\d@$!%*?#&^_-]{8,}$/.test(formData.password)) {
       toast.error("Password must be at least 8 characters and include uppercase, lowercase, number, and special character")
       return false
-    } 
+    }
     return true
 
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const success = formValidation()
-    if (success) 
-      console.log(formData)
-
+    const isValid = formValidation()
+    if (!isValid) return
+    
+    const result =await  dispatch(signUpThunk(formData))
+    if(signUpThunk.fulfilled.match(result)){
+      toast.success("SignUp Successful")
+    }else{
+      toast.error(result.payload||"SignUp failed")
+    }
+    
   }
   return (
     <div className="container mx-auto min-h-[calc(100vh-4rem)] grid  lg:grid-cols-2  ">
@@ -133,7 +145,9 @@ const SignUp: FC = () => {
               </div>
             </div>
           </div>
-          <button type="submit" className="bg-primary w-full py-4 rounded-lg mt-4 hover:bg-primary/50 ">Create Account</button>
+          <button type="submit" className="bg-primary w-full py-4 rounded-lg mt-4 hover:bg-primary/50  flex justify-center items-center " disabled={isSigningUP}>
+            {isSigningUP?(<TbLoaderQuarter className="size-6 animate-spin"/>):("Create Account")}
+          </button>
         </form>
         <div className="text-center">
           <p className="text-base-content/60 mt-4">Alreadt have an account?{" "}

@@ -7,18 +7,26 @@ import NavBar from "./components/NavBar"
 import { useDispatch } from "react-redux"
 import type { AppDispatch, RootState } from "./store/store"
 import { useEffect } from "react"
-import { checkAuth } from "./store/features/auth/authSlice"
+import { checkAuthThunk } from "./store/features/auth/authSlice"
 import { useSelector } from "react-redux"
 import Login from "./pages/LogIn"
 import { Toaster } from "react-hot-toast"
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth)
+  const { user, isCheckAuth } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
-    dispatch(checkAuth())
+    dispatch(checkAuthThunk())
   }, [])
+  console.log(user)
+  if (isCheckAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white">
+        Checking authentication...
+      </div>
+    );
+  }
   return (
     <>
       <NavBar />
@@ -31,7 +39,7 @@ function App() {
           <Route path="/profile" element={user ? <Profile /> : <Navigate to='/login' />} />
         </Routes>
       </main>
-       <Toaster
+      <Toaster
         position="bottom-right"
         toastOptions={{
           duration: 3000,

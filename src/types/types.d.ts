@@ -1,6 +1,6 @@
 export type showPasswordState = boolean
 
-export type formDataState = {
+export type signUpState = {
     fullName:string,
     email:string,
     password:string
