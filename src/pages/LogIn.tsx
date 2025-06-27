@@ -1,19 +1,26 @@
 import { FiMessageSquare } from "react-icons/fi"
 import AuthPattern from "../components/AuthPattern"
 import { HiOutlineMail } from "react-icons/hi"
-import { TbPassword } from "react-icons/tb"
+import { TbLoaderQuarter, TbPassword } from "react-icons/tb"
 import { useState } from "react"
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
 import type { SignInState } from "../types/types"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import toast from "react-hot-toast"
+import { useDispatch } from "react-redux"
+import type { AppDispatch, RootState } from "../store/store"
+import { useSelector } from "react-redux"
+import { signInThunk } from "../store/features/auth/authSlice"
 
 const Login = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { isLoggingiN } = useSelector((state: RootState) => state.auth)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [formData, setFormData] = useState<SignInState>({
     email: "",
     password: ""
   })
+  const navigate= useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -42,10 +49,18 @@ const Login = () => {
     return true
 
   }
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const success = formValidation()
-    if(success) console.log(formData)
+    const isValid = formValidation()
+    if (!isValid) return
+    const result = await dispatch(signInThunk(formData))
+    if (signInThunk.fulfilled.match(result)) {
+      toast.success("Sign in successful")
+      navigate('/')
+
+    } else {
+      toast.error(result.payload || "Sign in failed")
+    }
 
   }
   return (
@@ -104,7 +119,9 @@ const Login = () => {
                 </div>
               </div>
             </div>
-            <button type="submit" className="bg-primary w-full py-4 rounded-lg mt-4 hover:bg-primary/50 ">Sign In</button>
+            <button type="submit" className="bg-primary w-full py-4 rounded-lg mt-4 hover:bg-primary/50 ">
+              {isLoggingiN?(<TbLoaderQuarter className="size-6 animate-spin"/>):("Sign in")}
+            </button>
           </form>
           <div className="text-center">
             <p className="text-base-content/60 mt-4">Don't have an account? <Link to="/signup" className="text-primary hover:text-primary/60">Create Account</Link></p>
