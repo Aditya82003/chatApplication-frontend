@@ -4,9 +4,14 @@ import { LuSettings } from 'react-icons/lu';
 import { FaRegUser } from 'react-icons/fa';
 import { LuLogOut } from 'react-icons/lu';
 import { Link } from "react-router"
+import { useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
 
 const NavBar: FC = () => {
+    const dispatch = useDispatch<AppDispatch>()
+    const { user } = useSelector((state: RootState) => state.auth)
     return (
         <header className="fixed w-full bg-base-100 border-b border-base-300 backdrop-blur-lg top-0 z-40 ">
             <div className="container mx-auto px-6 h-12 ">
@@ -20,19 +25,20 @@ const NavBar: FC = () => {
                         </Link>
                     </div>
                     <div className="flex gap-2 items-center">
-                        <Link to="/setting" className="flex gap-2 items-center btn btn-sm  ">
+                        <Link to="/setting" className="flex gap-2 items-center btn btn-sm rounded-lg ">
                             <LuSettings className="w-4 h-4" />
                             <span className="hidden sm:inline">Setting</span>
                         </Link>
-                        <Link to="/profile" className="flex gap-2 items-center btn btn-sm">
-                            <FaRegUser className="w-4 h-4"/>
+                        {user?(<Link to="/profile" className="flex gap-2 items-center btn btn-sm rounded-lg">
+                            <FaRegUser className="w-4 h-4" />
                             <span className="hidden sm:inline">Profile</span>
-                        </Link>
-                        <Link to="/" className="flex gap-2 items-center btn btn-sm">
-                            <LuLogOut className="w-4 h-4"/>
+                        </Link>):""}
+                        {user?(<Link to="/" className="flex gap-2 items-center btn btn-sm rounded-lg">
+                            <LuLogOut className="w-4 h-4" />
                             <span className="hidden sm:inline">Logout</span>
-                        </Link>
+                        </Link>):""}
                         
+
                     </div>
 
 

@@ -64,7 +64,7 @@ const Login = () => {
 
   }
   return (
-    <div className="container mx-auto grid min-h-[calc(100vh-4rem)] lg:grid-cols-2 ">
+    <div className="container mx-auto grid min-h-screen lg:grid-cols-2 ">
       {/* left side */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12 ">
         <div className="w-full max-w-md space-y-8 ">

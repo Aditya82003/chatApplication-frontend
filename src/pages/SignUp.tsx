@@ -70,7 +70,7 @@ const SignUp: FC = () => {
     
   }
   return (
-    <div className="container mx-auto min-h-[calc(100vh-4rem)] grid  lg:grid-cols-2  ">
+    <div className="container mx-auto min-h-screen grid  lg:grid-cols-2  ">
       {/* left side*/}
       <div className=" flex flex-col justify-center items-center p-6 sm:p-12">
         {/*left top */}
