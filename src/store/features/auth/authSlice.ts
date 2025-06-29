@@ -65,6 +65,17 @@ export const signInThunk = createAsyncThunk<signUpResponse, SignInState, { rejec
     }
 })
 
+export const uploadProfileThunk = createAsyncThunk<signUpResponse, string, { rejectValue: string }>('auth/upload-profile', async (profilePhoto, { rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.put('/auth/upload-profile', { profilePic: profilePhoto })
+        return res.data as signUpResponse
+    } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        const errorMsg = err.response?.data?.message || "upload failed";
+        return rejectWithValue(errorMsg);
+    }
+})
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -110,6 +121,21 @@ const authSlice = createSlice({
             .addCase(signInThunk.rejected, (state, action) => {
                 state.isLoggingiN = false
                 state.error = action.payload || "Sign in failed"
+            })
+            //Upload profile
+            .addCase(uploadProfileThunk.pending, (state) => {
+                state.isUpdatingProfile = true
+                state.error = null
+            })
+            .addCase(uploadProfileThunk.fulfilled, (state, action) => {
+                if (state.user) {
+                    state.user.profile = action.payload.user.profile
+                }
+                state.isUpdatingProfile = false
+            })
+            .addCase(uploadProfileThunk.rejected, (state, action) => {
+                state.isUpdatingProfile = false
+                state.error = action.payload || "Unavialable to update profile"
             })
     }
 })

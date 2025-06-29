@@ -2,12 +2,16 @@ import { useState, type FC } from "react"
 import { FaCamera, FaUser } from 'react-icons/fa';
 import { AiOutlineMail } from 'react-icons/ai';
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
+import type { AppDispatch, RootState } from "../store/store";
 import userLogo from '../assets/OIP.jpeg'
+import { useDispatch } from "react-redux";
+import { uploadProfileThunk } from "../store/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Profile: FC = () => {
   const { user } = useSelector((state: RootState) => state.auth)
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
+  const dispatch =useDispatch<AppDispatch>()
 
   function getTimestampFromObjectId(objectId: string): string {
     const timestamp = parseInt(objectId.substring(0, 8), 16);
@@ -23,6 +27,12 @@ const Profile: FC = () => {
     reader.onload = async () => {
       const base64Image = reader.result as string
       setProfilePhoto(base64Image)
+      const result = await dispatch(uploadProfileThunk(base64Image))
+      if(uploadProfileThunk.fulfilled.match(result)){
+        toast.success("Profile updated")
+      }else{
+        toast.error(result.payload || "Unavailable to update profile")
+      }
     }
 
     reader.onerror = (err) => {
