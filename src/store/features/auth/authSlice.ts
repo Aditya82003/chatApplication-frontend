@@ -76,6 +76,17 @@ export const uploadProfileThunk = createAsyncThunk<signUpResponse, string, { rej
     }
 })
 
+export const logOutthunk = createAsyncThunk<void, void, { rejectValue: string }>('auth/logout', async (_, { rejectWithValue }) => {
+    try{
+        await axiosInstance.post('/auth/signout', {}, { withCredentials: true })
+        return
+    }catch(error){
+        const err = error as AxiosError<{ message: string }>;
+        const errorMsg = err.response?.data?.message || "upload failed";
+        return rejectWithValue(errorMsg);
+    }
+})
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -136,6 +147,14 @@ const authSlice = createSlice({
             .addCase(uploadProfileThunk.rejected, (state, action) => {
                 state.isUpdatingProfile = false
                 state.error = action.payload || "Unavialable to update profile"
+            })
+            //logout
+            .addCase(logOutthunk.fulfilled,(state)=>{
+                state.user=null
+                state.error=null
+            })
+            .addCase(logOutthunk.rejected,(state,action)=>{
+                state.error=action.payload || "unavailable to logout"
             })
     }
 })

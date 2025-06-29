@@ -9,7 +9,7 @@ import { uploadProfileThunk } from "../store/features/auth/authSlice";
 import toast from "react-hot-toast";
 
 const Profile: FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth)
+  const { user,isUpdatingProfile } = useSelector((state: RootState) => state.auth)
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
   const dispatch =useDispatch<AppDispatch>()
 
@@ -55,7 +55,9 @@ const Profile: FC = () => {
               <img src={profilePhoto || user?.profilePic || userLogo}
                 alt="profile"
                 className="size-32 rounded-full border-2 object-cover " />
-              <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-base-content hover:scale-125 p-2 rounded-full cursor-pointer transition-all duration-200">
+              <label htmlFor="profile-upload" className={`absolute bottom-0 right-0 bg-base-content hover:scale-125 p-2 rounded-full cursor-pointer transition-all duration-200  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}`}
+
+              >
                 <FaCamera className="w-4 h-4 text-base-200" />
                 <input
                   type="file"
@@ -63,11 +65,12 @@ const Profile: FC = () => {
                   className="hidden"
                   accept="image/*"
                   onChange={handleImageUpload}
+                  disabled={isUpdatingProfile}
                 >
                 </input>
               </label>
             </div>
-            <p className="text-sm text-zinc-400">Click the camera icron to update your photo</p>
+            <p className="text-sm text-zinc-400">{isUpdatingProfile?"Uploading....":"Click the camera icon to update your photo"}</p>
           </div>
           <div className="space-y-6 " >
             <div className="space-y-3">

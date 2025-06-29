@@ -7,11 +7,18 @@ import { Link } from "react-router"
 import { useDispatch } from "react-redux";
 import type { AppDispatch, RootState } from "../store/store";
 import { useSelector } from "react-redux";
+import { logOutthunk } from "../store/features/auth/authSlice";
+import toast from "react-hot-toast";
 
 
 const NavBar: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const { user } = useSelector((state: RootState) => state.auth)
+
+    const handleClick = (): void => {
+        dispatch(logOutthunk())
+        toast.success("Logout...")
+    }
     return (
         <header className="fixed w-full bg-base-100 border-b border-base-300 backdrop-blur-lg top-0 z-40 ">
             <div className="container mx-auto px-6 h-12 ">
@@ -29,15 +36,15 @@ const NavBar: FC = () => {
                             <LuSettings className="w-4 h-4" />
                             <span className="hidden sm:inline">Setting</span>
                         </Link>
-                        {user?(<Link to="/profile" className="flex gap-2 items-center btn btn-sm rounded-lg">
+                        {user ? (<Link to="/profile" className="flex gap-2 items-center btn btn-sm rounded-lg">
                             <FaRegUser className="w-4 h-4" />
                             <span className="hidden sm:inline">Profile</span>
-                        </Link>):""}
-                        {user?(<Link to="/" className="flex gap-2 items-center btn btn-sm rounded-lg">
-                            <LuLogOut className="w-4 h-4" />
+                        </Link>) : ""}
+                        {user ? (<button className="flex gap-2 items-center" onClick={handleClick}>
+                            <LuLogOut className="size-5" />
                             <span className="hidden sm:inline">Logout</span>
-                        </Link>):""}
-                        
+                        </button>) : ""}
+
 
                     </div>
 
