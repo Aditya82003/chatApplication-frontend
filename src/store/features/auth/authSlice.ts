@@ -7,7 +7,7 @@ interface User {
     _id: string
     email: string
     fullName: string
-    profile?: string
+    profilePic?: string
 }
 
 interface signUpResponse {
@@ -129,7 +129,7 @@ const authSlice = createSlice({
             })
             .addCase(uploadProfileThunk.fulfilled, (state, action) => {
                 if (state.user) {
-                    state.user.profile = action.payload.user.profile
+                    state.user.profilePic = action.payload.user.profilePic
                 }
                 state.isUpdatingProfile = false
             })

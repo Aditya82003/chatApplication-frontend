@@ -52,7 +52,7 @@ const Profile: FC = () => {
           {/* avatar upload section */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <img src={profilePhoto || user?.profile || userLogo}
+              <img src={profilePhoto || user?.profilePic || userLogo}
                 alt="profile"
                 className="size-32 rounded-full border-2 object-cover " />
               <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-base-content hover:scale-125 p-2 rounded-full cursor-pointer transition-all duration-200">
