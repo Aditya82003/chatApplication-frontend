@@ -15,6 +15,7 @@ import { Toaster } from "react-hot-toast"
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { user, isCheckAuth } = useSelector((state: RootState) => state.auth)
+  const {theme} = useSelector((state:RootState)=>state.theme)
 
   useEffect(() => {
     dispatch(checkAuthThunk())
@@ -28,14 +29,14 @@ function App() {
     );
   }
   return (
-    <>
-      <NavBar />
+    <div data-theme={theme}>
+      <NavBar/>
       <main>
         <Routes>
           <Route path="/" element={user ? <Home /> : <Navigate to='/login' />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/settings" element={<Setting />} />
+          <Route path="/setting" element={<Setting />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to='/login' />} />
         </Routes>
       </main>
@@ -49,7 +50,7 @@ function App() {
           },
         }}
       />
-    </>
+    </div>
   )
 }
 
