@@ -3,7 +3,7 @@ import axiosInstance from "../../../lib/axios";
 import type { SignInState, signUpState } from "../../../types/types";
 import type { AxiosError } from "axios";
 
-interface User {
+export interface User {
     _id: string
     email: string
     fullName: string

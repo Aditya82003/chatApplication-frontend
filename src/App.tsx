@@ -20,7 +20,6 @@ function App() {
   useEffect(() => {
     dispatch(checkAuthThunk())
   }, [])
-  console.log(user)
   if (isCheckAuth) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white">
