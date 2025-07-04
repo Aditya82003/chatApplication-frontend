@@ -7,7 +7,6 @@ import ChatCointainer from "../components/ChatCointainer"
 
 const Home: FC = () => {
   const { selectedUser } = useSelector((state: RootState) => state.chat)
-  console.log(selectedUser)
   return (
     <div className=" h-screen bg-base-200">
       <div className="flex items-center justify-center pt-18 px-4">

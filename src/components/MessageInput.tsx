@@ -2,12 +2,18 @@ import { useRef, useState, type FC } from "react"
 import { BiSend } from "react-icons/bi"
 import { CgClose } from "react-icons/cg"
 import { ImImage } from "react-icons/im"
+import { useDispatch } from "react-redux"
+import type { AppDispatch, RootState } from "../store/store"
+import { sendMessageThunk } from "../store/features/chat/chatSlice"
+import { useSelector } from "react-redux"
 
 
 const MessageInput: FC = () => {
     const [text, setText] = useState<string>("")
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const dispatch = useDispatch<AppDispatch>()
+    const {selectedUser} =useSelector((state:RootState)=>state.chat)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setText(e.target.value)
@@ -29,9 +35,14 @@ const MessageInput: FC = () => {
 
     const handleSendMessage = async(e: React.FormEvent)=>{
         e.preventDefault()
+        if(!selectedUser?._id) return
         if(!text?.trim() && !imagePreview) return
 
-        console.log(text,imagePreview)
+        dispatch(sendMessageThunk({
+            id:selectedUser?._id,
+            text,
+            image:imagePreview || ""
+        }))
          
         setText("")
         setImagePreview(null)

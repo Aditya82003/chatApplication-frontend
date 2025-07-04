@@ -48,6 +48,17 @@ export const getMessagethunk = createAsyncThunk<Message[], string, { rejectValue
     }
 })
 
+export const sendMessageThunk = createAsyncThunk<Message, {id:string,text:string,image:string}, { rejectValue: string }>('chat/sendMessage', async ({id,text,image}, { rejectWithValue }) => {
+    try {
+        const res = await axiosInstance.post(`/message/${id}`,{text,image})
+        return res.data.chat as Message
+
+    }catch (err) {
+        const error = err as AxiosError<{ message: string }>;
+        return rejectWithValue(error.response?.data?.message || "Failed to send message");
+    }
+})
+
 const chatSlice = createSlice({
     name: 'chat',
     initialState,
