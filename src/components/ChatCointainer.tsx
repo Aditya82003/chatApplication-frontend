@@ -1,39 +1,45 @@
-import type { FC } from "react"
+import { useEffect, type FC } from "react"
 import { useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../store/store"
-import { CgClose } from "react-icons/cg"
-import defaultProfile from '../assets/OIP.jpeg'
 import { useDispatch } from "react-redux"
-import { setSelectedUser } from "../store/features/chat/chatSlice"
+import { getMessagethunk } from "../store/features/chat/chatSlice"
+import ChatHeader from "./ChatHeader"
+import MessageInput from "./MessageInput"
+import defaultImage from '../assets/OIP.jpeg'
 
 const ChatCointainer: FC = () => {
-    const dispatch=useDispatch<AppDispatch>()
-    // const {messages}= useSelector((state:RootState)=>state.chat)
+    const dispatch = useDispatch<AppDispatch>()
+    const { messages, isMessageLoading } = useSelector((state: RootState) => state.chat)
     const { selectedUser } = useSelector((state: RootState) => state.chat)
+    const { user } = useSelector((state: RootState) => state.auth)
+
+    useEffect(() => {
+        if (selectedUser?._id) {
+            dispatch(getMessagethunk(selectedUser._id))
+        }
+    }, [getMessagethunk, selectedUser?._id])
+
+    if (isMessageLoading) {
+        <h1>Loading.....</h1>
+    }
     return (
-        <div className="h-full w-full flex flex-col   rounded-lg ">
-            <div className="w-full rounded-lg border-b border-base-300 ">
-                <div className="flex items-center justify-between py-1.5 ">
-                    <div className="flex gap-3 items-center pl-4">
-                        <img
-                        src={selectedUser?.profilePic || defaultProfile}
-                        alt={selectedUser?.fullName}
-                        className="size-12 rounded-full object-cover"/>
-                        <div className="">
-                            <h1 className="text-lg font-semibold">{selectedUser?.fullName}</h1>
-                            <span className="text-xs">Online</span>
+        <div className="flex-1 flex flex-col overflow-auto">
+            <ChatHeader />
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 ">
+                {messages.map((message) => (
+                    <div
+                        key={message._id}
+                        className={`chat ${message.senderId === user?._id ? "chat-end" : "chat-start"}`}>
+                        <div className="chat-image avatar">
+                            <div className="size-10 rounded-full border">
+                                <img src={message.senderId === user?._id ? user.profilePic ||defaultImage: selectedUser?.profilePic || defaultImage}
+                                alt="profile pic" />
+                            </div>
                         </div>
                     </div>
-                    <div className="flex w-8 h-8 items-center justify-center hover:bg-base-300 rounded-full mr-4">
-                        <CgClose className="size-5" onClick={()=>dispatch(setSelectedUser(null))} />
-                    </div>
-                </div>
+                ))}
             </div>
-            <div className="flex flex-col justify-between h-full w-full p-2 ">
-                <div className="overflow-y-auto h-full border-b border-base-300">messages</div>
-                <div className="flex items-center h-12 w-full">text feild</div>
-                
-            </div>
+            <MessageInput/>
         </div>
     )
 }

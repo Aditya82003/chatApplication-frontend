@@ -4,6 +4,7 @@ import axiosInstance from "../../../lib/axios";
 import type { AxiosError } from "axios";
 
 type Message = {
+    _id: string
     senderId: string
     receiverId: string
     text: string
@@ -11,7 +12,7 @@ type Message = {
 }
 
 type ChatState = {
-    users: User[]
+    chatUsers: User[]
     messages: Message[]
     selectedUser: User | null
     isUserLoading: boolean
@@ -19,7 +20,7 @@ type ChatState = {
     error: string | null
 }
 const initialState: ChatState = {
-    users: [],
+    chatUsers: [],
     messages: [],
     selectedUser: null,
     isUserLoading: false,
@@ -63,7 +64,7 @@ const chatSlice = createSlice({
         })
             .addCase(getUsersThunk.fulfilled, (state, action) => {
                 state.isUserLoading = false
-                state.users = action.payload
+                state.chatUsers = action.payload
                 state.error = null
             })
             .addCase(getUsersThunk.rejected, (state, action) => {

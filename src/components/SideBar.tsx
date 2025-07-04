@@ -8,7 +8,7 @@ import userDefaultProfile from '../assets/OIP.jpeg'
 
 const SideBar: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { users ,selectedUser} = useSelector((state: RootState) => state.chat)
+    const { chatUsers ,selectedUser} = useSelector((state: RootState) => state.chat)
     const [showOnlineOnly, setShowOnlineOnly] = useState<boolean>(false)
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -41,7 +41,7 @@ const SideBar: FC = () => {
             </div>
             <div className=" py-2 overflow-y-auto w-full ">
                 {
-                    users.map((user) => (
+                    chatUsers.map((user) => (
                         <button
                             key={user._id}
                             className={`w-full p-3 flex gap-2 items-center  transition-colors border-b border-base-200 ${selectedUser===user?"bg-base-300 ring-1 ring-base-300":"hover:bg-base-300"}`}
@@ -63,7 +63,7 @@ const SideBar: FC = () => {
                             </div>
                         </button>
                     ))}
-                {(users.length === 0) && (
+                {(chatUsers.length === 0) && (
                     <div className="text-center text-zinc-500 py-4">No online User</div>
                 )
                 }
