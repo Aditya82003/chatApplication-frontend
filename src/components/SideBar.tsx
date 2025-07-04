@@ -2,13 +2,13 @@ import React, { useEffect, useState, type FC } from "react"
 import { useDispatch } from "react-redux"
 import type { AppDispatch, RootState } from "../store/store"
 import { useSelector } from "react-redux"
-import { getUsersThunk } from "../store/features/chat/chatSlice"
+import { getUsersThunk, setSelectedUser } from "../store/features/chat/chatSlice"
 import { FaUsers } from "react-icons/fa"
 import userDefaultProfile from '../assets/OIP.jpeg'
 
 const SideBar: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { users, isUserLoading } = useSelector((state: RootState) => state.chat)
+    const { users ,selectedUser} = useSelector((state: RootState) => state.chat)
     const [showOnlineOnly, setShowOnlineOnly] = useState<boolean>(false)
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -17,7 +17,6 @@ const SideBar: FC = () => {
 
     useEffect(() => {
         dispatch(getUsersThunk())
-        console.log(users)
     }, [getUsersThunk])
 
     return (
@@ -45,7 +44,9 @@ const SideBar: FC = () => {
                     users.map((user) => (
                         <button
                             key={user._id}
-                            className={`w-full p-3 flex gap-2 items-center hover:bg-base-300 transition-colors border-b border-base-200`}>
+                            className={`w-full p-3 flex gap-2 items-center  transition-colors border-b border-base-200 ${selectedUser===user?"bg-base-300 ring-1 ring-base-300":"hover:bg-base-300"}`}
+                            onClick={()=>dispatch(setSelectedUser(user))}
+                            >
                             <div className="relative ">
                                 <img src={user.profilePic || userDefaultProfile}
                                     alt={user.fullName}

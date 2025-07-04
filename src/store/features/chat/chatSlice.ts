@@ -3,11 +3,11 @@ import type { User } from "../auth/authSlice";
 import axiosInstance from "../../../lib/axios";
 import type { AxiosError } from "axios";
 
-type Message={
- senderId:string
- receiverId:string
- text:string
- image:string
+type Message = {
+    senderId: string
+    receiverId: string
+    text: string
+    image: string
 }
 
 type ChatState = {
@@ -30,7 +30,6 @@ const initialState: ChatState = {
 export const getUsersThunk = createAsyncThunk<User[], void, { rejectValue: string }>('chat/getUsers', async (_, { rejectWithValue }) => {
     try {
         const res = await axiosInstance.get('/message/users')
-        console.log(res.data.users)
         return res.data.users as User[]
     } catch (err) {
         const error = err as AxiosError<{ message: string }>;
@@ -40,7 +39,7 @@ export const getUsersThunk = createAsyncThunk<User[], void, { rejectValue: strin
 
 export const getMessagethunk = createAsyncThunk<Message[], string, { rejectValue: string }>('chat/messages', async (id, { rejectWithValue }) => {
     try {
-        const res =await  axiosInstance.get(`/message/${id}`)
+        const res = await axiosInstance.get(`/message/${id}`)
         return res.data.chats as Message[]
     } catch (err) {
         const error = err as AxiosError<{ message: string }>;
@@ -51,8 +50,13 @@ export const getMessagethunk = createAsyncThunk<Message[], string, { rejectValue
 const chatSlice = createSlice({
     name: 'chat',
     initialState,
-    reducers: {},
+    reducers: {
+        setSelectedUser: (state, action) => {
+            state.selectedUser = action.payload
+        }
+    },
     extraReducers: (builder) => {
+        //get all user
         builder.addCase(getUsersThunk.pending, (state) => {
             state.isUserLoading = true
             state.error = null
@@ -67,19 +71,21 @@ const chatSlice = createSlice({
                 state.error = action.payload || "Can't fetch users"
             })
             //getMessages
-            .addCase(getMessagethunk.pending,(state)=>{
-                state.isMessageLoading=true
-                state.error=null
+            .addCase(getMessagethunk.pending, (state) => {
+                state.isMessageLoading = true
+                state.error = null
             })
-            .addCase(getMessagethunk.fulfilled,(state,action)=>{
-                state.isMessageLoading=false
-                state.messages=action.payload
+            .addCase(getMessagethunk.fulfilled, (state, action) => {
+                state.isMessageLoading = false
+                state.messages = action.payload
             })
-            .addCase(getMessagethunk.rejected,(state,action)=>{
-                state.isUserLoading=false
-                state.error=action.payload||"Can't fetch messages"
+            .addCase(getMessagethunk.rejected, (state, action) => {
+                state.isUserLoading = false
+                state.error = action.payload || "Can't fetch messages"
             })
     }
 })
+
+export const { setSelectedUser } = chatSlice.actions
 
 export default chatSlice.reducer
