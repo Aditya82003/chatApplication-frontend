@@ -1,11 +1,11 @@
 import { useRef, useState, type FC } from "react"
 import { BiSend } from "react-icons/bi"
 import { CgClose } from "react-icons/cg"
-import { ImImage } from "react-icons/im"
 import { useDispatch } from "react-redux"
 import type { AppDispatch, RootState } from "../store/store"
 import { sendMessageThunk } from "../store/features/chat/chatSlice"
 import { useSelector } from "react-redux"
+import { FaFileImage } from "react-icons/fa"
 
 
 const MessageInput: FC = () => {
@@ -78,12 +78,12 @@ const MessageInput: FC = () => {
                     <button type="button"
                         className={`hidden sm:flex btn btn-circle ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
                         onClick={() => fileInputRef.current?.click()}>
-                        <ImImage />
+                        <FaFileImage className="size-5 text-primary" />
                     </button>
                 </div>
-                <button type="submit" className="btn btn-circle btn-sm "
+                <button type="submit" className="btn btn-circle btn-sm  "
                     disabled={!text?.trim() && !imagePreview}>
-                    <BiSend size={22} />
+                    <BiSend size={22} className="text-primary" />
                 </button>
             </form>
         </div>

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { User } from "../auth/authSlice";
 import axiosInstance from "../../../lib/axios";
 import type { AxiosError } from "axios";
@@ -48,12 +48,12 @@ export const getMessagethunk = createAsyncThunk<Message[], string, { rejectValue
     }
 })
 
-export const sendMessageThunk = createAsyncThunk<Message, {id:string,text:string,image:string}, { rejectValue: string }>('chat/sendMessage', async ({id,text,image}, { rejectWithValue }) => {
+export const sendMessageThunk = createAsyncThunk<Message, { id: string, text: string, image: string }, { rejectValue: string }>('chat/sendMessage', async ({ id, text, image }, { rejectWithValue }) => {
     try {
-        const res = await axiosInstance.post(`/message/${id}`,{text,image})
+        const res = await axiosInstance.post(`/message/${id}`, { text, image })
         return res.data.chat as Message
 
-    }catch (err) {
+    } catch (err) {
         const error = err as AxiosError<{ message: string }>;
         return rejectWithValue(error.response?.data?.message || "Failed to send message");
     }
@@ -63,7 +63,7 @@ const chatSlice = createSlice({
     name: 'chat',
     initialState,
     reducers: {
-        setSelectedUser: (state, action) => {
+        setSelectedUser: (state, action: PayloadAction<User | null>) => {
             state.selectedUser = action.payload
         }
     },
@@ -92,8 +92,20 @@ const chatSlice = createSlice({
                 state.messages = action.payload
             })
             .addCase(getMessagethunk.rejected, (state, action) => {
-                state.isUserLoading = false
+                state.isMessageLoading = false
                 state.error = action.payload || "Can't fetch messages"
+            })
+            //send message
+            .addCase(sendMessageThunk.pending, (state) => {
+                state.isMessageLoading = true
+            })
+            .addCase(sendMessageThunk.fulfilled, (state, action) => {
+                state.isMessageLoading = false
+                state.messages.push(action.payload)
+            })
+            .addCase(sendMessageThunk.rejected, (state, action) => {
+                state.isMessageLoading = false
+                state.error = action.payload || "can't send message"
             })
     }
 })
