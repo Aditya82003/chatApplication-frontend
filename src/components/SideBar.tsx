@@ -57,7 +57,7 @@ const SideBar: FC = () => {
                                 />
                                 {
                                     onlineUser?.includes(user._id) && (
-                                        <span className="relative bottom-0 right-0 size-5 rounded-full bg-emerald-500 ring-2 ring-zinc-900" />
+                                        <span className="absolute bottom-0 right-0 size-3 rounded-full bg-green-600 ring-1 ring-zinc-500" />
                                     )
                                 }
                             </div>

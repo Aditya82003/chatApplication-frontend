@@ -9,6 +9,8 @@ import { setSelectedUser } from "../store/features/chat/chatSlice"
 const ChatHeader: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const { selectedUser } = useSelector((state: RootState) => state.chat)
+    const {onlineUser} =useSelector((state:RootState)=>state.auth)
+    if (!selectedUser) return null;
 
     return (
         <div className="w-full  border-b border-base-300 ">
@@ -20,7 +22,7 @@ const ChatHeader: FC = () => {
                         className="size-12 rounded-full object-cover" />
                     <div className="">
                         <h1 className="text-lg font-semibold">{selectedUser?.fullName}</h1>
-                        <span className="text-xs">Online</span>
+                        <span className="text-xs">{onlineUser?.includes(selectedUser?._id) ?"Online":"Offline"}</span>
                     </div>
                 </div>
                 <div className="flex w-8 h-8 items-center justify-center hover:bg-base-300 rounded-full mr-4">
