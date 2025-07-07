@@ -8,16 +8,19 @@ import userDefaultProfile from '../assets/OIP.jpeg'
 
 const SideBar: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { chatUsers ,selectedUser} = useSelector((state: RootState) => state.chat)
+    const { chatUsers, selectedUser } = useSelector((state: RootState) => state.chat)
+    const { onlineUser } = useSelector((state: RootState) => state.auth)
     const [showOnlineOnly, setShowOnlineOnly] = useState<boolean>(false)
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setShowOnlineOnly(e.target.checked)
     }
 
     useEffect(() => {
         dispatch(getUsersThunk())
     }, [getUsersThunk])
+
+    const filteredUsers = showOnlineOnly ? chatUsers.filter((user) => onlineUser?.includes(user._id)) : chatUsers
 
     return (
         <aside className=" h-full w-20 lg:w-72 rouded-lg border-r border-base-200 flex flex-col transition-all duration-200">
@@ -36,34 +39,39 @@ const SideBar: FC = () => {
                         />
                         <span className="text-sm">Show online only</span>
                     </label>
-                    <span className="text-xs text-zinc-500">0</span>
+                    <span className="text-xs text-zinc-500">{Math.max((onlineUser?.length ?? 1) - 1, 0)}</span>
                 </div>
             </div>
             <div className=" py-2 overflow-y-auto w-full ">
                 {
-                    chatUsers.map((user) => (
+                    filteredUsers.map((user) => (
                         <button
                             key={user._id}
-                            className={`w-full p-3 flex gap-2 items-center  transition-colors border-b border-base-200 ${selectedUser===user?"bg-base-300 ring-1 ring-base-300":"hover:bg-base-300"}`}
-                            onClick={()=>dispatch(setSelectedUser(user))}
-                            >
+                            className={`w-full p-3 flex gap-2 items-center  transition-colors border-b border-base-200 ${selectedUser === user ? "bg-base-300 ring-1 ring-base-300" : "hover:bg-base-300"}`}
+                            onClick={() => dispatch(setSelectedUser(user))}
+                        >
                             <div className="relative ">
                                 <img src={user.profilePic || userDefaultProfile}
                                     alt={user.fullName}
                                     className=" size-12 object-cover rounded-full"
                                 />
+                                {
+                                    onlineUser?.includes(user._id) && (
+                                        <span className="relative bottom-0 right-0 size-5 rounded-full bg-emerald-500 ring-2 ring-zinc-900" />
+                                    )
+                                }
                             </div>
                             <div className="hidden lg:block text-left min-w-0">
                                 <div className="text-medium truncate">
                                     {user.fullName}
                                 </div>
                                 <div className="text-sm tracking-wider text-zinc-400">
-                                    online
+                                    {onlineUser?.includes(user._id)?"Online":"Offline"}
                                 </div>
                             </div>
                         </button>
                     ))}
-                {(chatUsers.length === 0) && (
+                {(filteredUsers.length === 0) && (
                     <div className="text-center text-zinc-500 py-4">No online User</div>
                 )
                 }
