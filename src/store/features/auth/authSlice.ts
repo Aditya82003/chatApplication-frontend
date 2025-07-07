@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import axiosInstance from "../../../lib/axios";
 import type { SignInState, signUpState } from "../../../types/types";
 import type { AxiosError } from "axios";
@@ -20,7 +20,7 @@ interface AuthState {
     isLoggingiN: boolean
     isUpdatingProfile: boolean
     isCheckAuth: boolean
-    onlineUser: User[] | null
+    onlineUser: string[] | null
     error: string | null
 
 }
@@ -90,7 +90,11 @@ export const logOutthunk = createAsyncThunk<void, void, { rejectValue: string }>
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        setOnlineUsers:(state,action:PayloadAction<string[]>)=>{
+            state.onlineUser=action.payload
+        }
+    },
     extraReducers: (builder) => {
         //check auth
         builder.addCase(checkAuthThunk.pending, (state) => {
@@ -159,4 +163,5 @@ const authSlice = createSlice({
     }
 })
 
+export const {setOnlineUsers} = authSlice.actions
 export default authSlice.reducer

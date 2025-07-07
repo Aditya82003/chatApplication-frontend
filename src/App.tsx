@@ -7,19 +7,35 @@ import NavBar from "./components/NavBar"
 import { useDispatch } from "react-redux"
 import type { AppDispatch, RootState } from "./store/store"
 import { useEffect } from "react"
-import { checkAuthThunk } from "./store/features/auth/authSlice"
+import { checkAuthThunk, setOnlineUsers } from "./store/features/auth/authSlice"
 import { useSelector } from "react-redux"
 import Login from "./pages/LogIn"
 import { Toaster } from "react-hot-toast"
+import { connectSocket, disconnectSocket, getSocket } from "./lib/socket"
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { user, isCheckAuth } = useSelector((state: RootState) => state.auth)
-  const {theme} = useSelector((state:RootState)=>state.theme)
+  const { theme } = useSelector((state: RootState) => state.theme)
 
   useEffect(() => {
     dispatch(checkAuthThunk())
   }, [])
+  useEffect(() => {
+    const handleOnlineUsers = (users: string[]) => {
+      dispatch(setOnlineUsers(users));
+    };
+    if (user?._id) {
+      connectSocket(user._id)
+      const socket = getSocket()
+      socket?.on("getOnlineUsers", handleOnlineUsers)
+      return () => {
+        socket?.off("getOnlineUsers", handleOnlineUsers);
+      }
+    } else {
+      disconnectSocket()
+    }
+  }, [user])
   if (isCheckAuth) {
     return (
       <div className="flex items-center justify-center min-h-screen text-white">
@@ -27,9 +43,10 @@ function App() {
       </div>
     );
   }
+
   return (
     <div data-theme={theme}>
-      <NavBar/>
+      <NavBar />
       <main>
         <Routes>
           <Route path="/" element={user ? <Home /> : <Navigate to='/login' />} />
