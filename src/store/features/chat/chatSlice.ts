@@ -3,7 +3,7 @@ import type { User } from "../auth/authSlice";
 import axiosInstance from "../../../lib/axios";
 import type { AxiosError } from "axios";
 
-type Message = {
+export type Message = {
     _id: string
     senderId: string
     receiverId: string
@@ -65,6 +65,9 @@ const chatSlice = createSlice({
     reducers: {
         setSelectedUser: (state, action: PayloadAction<User | null>) => {
             state.selectedUser = action.payload
+        },
+        addNewMessage:(state,action)=>{
+            state.messages.push(action.payload)
         }
     },
     extraReducers: (builder) => {
@@ -110,6 +113,6 @@ const chatSlice = createSlice({
     }
 })
 
-export const { setSelectedUser } = chatSlice.actions
+export const { setSelectedUser,addNewMessage } = chatSlice.actions
 
 export default chatSlice.reducer

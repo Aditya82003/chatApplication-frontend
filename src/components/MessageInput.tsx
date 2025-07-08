@@ -37,6 +37,7 @@ const MessageInput: FC = () => {
         e.preventDefault()
         if(!selectedUser?._id) return
         if(!text?.trim() && !imagePreview) return
+    
 
         dispatch(sendMessageThunk({
             id:selectedUser?._id,
@@ -81,7 +82,7 @@ const MessageInput: FC = () => {
                         <FaFileImage className="size-5 text-primary" />
                     </button>
                 </div>
-                <button type="submit" className="btn btn-circle btn-sm  "
+                <button type="submit" className="btn btn-circle btn-md"
                     disabled={!text?.trim() && !imagePreview}>
                     <BiSend size={22} className="text-primary" />
                 </button>
