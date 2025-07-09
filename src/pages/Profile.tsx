@@ -9,9 +9,9 @@ import { uploadProfileThunk } from "../store/features/auth/authSlice";
 import toast from "react-hot-toast";
 
 const Profile: FC = () => {
-  const { user,isUpdatingProfile } = useSelector((state: RootState) => state.auth)
+  const { user, isUpdatingProfile } = useSelector((state: RootState) => state.auth)
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
-  const dispatch =useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
 
   function getTimestampFromObjectId(objectId: string): string {
     const timestamp = parseInt(objectId.substring(0, 8), 16);
@@ -67,10 +67,10 @@ const Profile: FC = () => {
                   onChange={handleImageUpload}
                   disabled={isUpdatingProfile}
                 >
-                </input>
+                </input>              
               </label>
             </div>
-            <p className="text-sm text-zinc-400">{isUpdatingProfile?"Uploading....":"Click the camera icon to update your photo"}</p>
+            <p className="text-sm text-zinc-400">{isUpdatingProfile ? "Uploading...." : "Click the camera icon to update your photo"}</p>
           </div>
           <div className="space-y-6 " >
             <div className="space-y-3">

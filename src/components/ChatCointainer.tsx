@@ -39,7 +39,7 @@ const ChatCointainer: FC = () => {
         }
     }, [selectedUser?._id])
 
-    if (!isMessageLoading) {
+    if (isMessageLoading) {
         return (<div className="flex flex-1 flex-col overflow-auto">
             <ChatHeader />
             <MessageSkeleton />

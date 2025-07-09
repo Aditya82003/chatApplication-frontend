@@ -5,10 +5,11 @@ import { useSelector } from "react-redux"
 import { getUsersThunk, setSelectedUser } from "../store/features/chat/chatSlice"
 import { FaUsers } from "react-icons/fa"
 import userDefaultProfile from '../assets/OIP.jpeg'
+import SidebarSkeleton from "./skeletons/SidebarSkeleton"
 
 const SideBar: FC = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { chatUsers, selectedUser } = useSelector((state: RootState) => state.chat)
+    const { chatUsers, selectedUser,isUserLoading } = useSelector((state: RootState) => state.chat)
     const { onlineUser } = useSelector((state: RootState) => state.auth)
     const [showOnlineOnly, setShowOnlineOnly] = useState<boolean>(false)
 
@@ -20,7 +21,10 @@ const SideBar: FC = () => {
         dispatch(getUsersThunk())
     }, [getUsersThunk])
 
+    
     const filteredUsers = showOnlineOnly ? chatUsers.filter((user) => onlineUser?.includes(user._id)) : chatUsers
+
+    if(isUserLoading) return <SidebarSkeleton/>
 
     return (
         <aside className=" h-full w-20 lg:w-72 rouded-lg border-r border-base-200 flex flex-col transition-all duration-200">
