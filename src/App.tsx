@@ -12,6 +12,7 @@ import { useSelector } from "react-redux"
 import Login from "./pages/LogIn"
 import { Toaster } from "react-hot-toast"
 import { connectSocket, disconnectSocket, getSocket } from "./lib/socket"
+import Group from "./pages/Group"
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -54,6 +55,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/setting" element={<Setting />} />
           <Route path="/profile" element={user ? <Profile /> : <Navigate to='/login' />} />
+          <Route path="/group" element={<Group/>}/>
+
         </Routes>
       </main>
       <Toaster

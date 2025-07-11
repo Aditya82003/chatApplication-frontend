@@ -9,6 +9,7 @@ import type { AppDispatch, RootState } from "../store/store";
 import { useSelector } from "react-redux";
 import { logOutthunk } from "../store/features/auth/authSlice";
 import toast from "react-hot-toast";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 
 
 const NavBar: FC = () => {
@@ -40,6 +41,10 @@ const NavBar: FC = () => {
                             <FaRegUser className="w-4 h-4" />
                             <span className="hidden sm:inline">Profile</span>
                         </Link>) : ""}
+                        {user?(<Link to="/group" className="flex gap-2 items-center btn btn-sm rounded-lg">
+                            <AiOutlineUsergroupAdd className="w-4 h-4"/>
+                            <span>Group</span>
+                        </Link>):""}
                         {user ? (<button className="flex gap-2 items-center" onClick={handleClick}>
                             <LuLogOut className="size-5" />
                             <span className="hidden sm:inline">Logout</span>
